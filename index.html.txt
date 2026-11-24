@@ -1,0 +1,1884 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>E Billing System - Enterprise Cloud Edition</title>
+  <style>
+    :root {
+      --primary: #065f46;
+      --accent: #10b981;
+      --danger: #dc2626;
+      --dark: #0f172a;
+      --bg: #f1f5f9;
+    }
+    * {
+      box-sizing: border-box;
+      font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+      -webkit-tap-highlight-color: transparent;
+    }
+    body { margin: 0; background: var(--bg); color: #1e293b; padding-bottom: 80px; }
+
+    .header {
+      background: linear-gradient(135deg, var(--primary), var(--accent));
+      color: white; padding: 14px 15px; display: flex; justify-content: space-between; align-items: center;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+    }
+    .brand-box { display: flex; align-items: center; gap: 10px; }
+    .brand-logo {
+      width: 38px; height: 38px; border-radius: 10px; background: rgba(255,255,255,0.2);
+      display: flex; align-items: center; justify-content: center; font-size: 20px; overflow: hidden;
+    }
+    .brand-logo img { width: 100%; height: 100%; object-fit: cover; }
+    .header h1 { margin: 0; font-size: 17px; letter-spacing: 0.3px; }
+    .badge {
+      background: rgba(255,255,255,0.2); padding: 6px 10px; border-radius: 20px;
+      font-size: 11px; cursor: pointer; font-weight: bold; margin-left: 5px; border: 1px solid rgba(255,255,255,0.25);
+    }
+
+    .sync-pill {
+      display: inline-block; font-size: 10px; padding: 2px 7px; border-radius: 12px;
+      background: rgba(0,0,0,0.25); color: #fff; margin-left: 6px; vertical-align: middle;
+    }
+
+    .container { padding: 12px; max-width: 540px; margin: auto; }
+
+    .global-bar {
+      display: flex; gap: 6px; margin-bottom: 10px; align-items: center; justify-content: space-between;
+      background: #fff; padding: 8px 10px; border-radius: 10px; box-shadow: 0 1px 4px rgba(0,0,0,0.05);
+    }
+    .global-bar select {
+      margin: 0; padding: 6px 8px; font-size: 12px; font-weight: 700; border-radius: 7px;
+      border: 1px solid #cbd5e1; background: #f8fafc; width: auto; flex: 1;
+    }
+    .printer-pill {
+      font-size: 11px; font-weight: 700; padding: 6px 10px; border-radius: 7px;
+      background: #eff6ff; color: #1d4ed8; cursor: pointer; white-space: nowrap; border: 1px solid #bfdbfe;
+    }
+
+    .anonymous-badge {
+      background: #fef3c7; color: #92400e; border: 1px dashed #f59e0b; padding: 8px 12px;
+      border-radius: 8px; font-size: 12px; font-weight: 700; display: flex; align-items: center;
+      justify-content: space-between; margin-bottom: 10px; cursor: pointer;
+    }
+
+    .voice-hub {
+      background: linear-gradient(145deg, #0f172a, #1e293b);
+      color: white; padding: 14px; border-radius: 14px; margin-bottom: 14px;
+      box-shadow: 0 6px 14px rgba(0,0,0,0.15); border: 1px solid #334155;
+    }
+    .voice-top { display: flex; align-items: center; justify-content: space-between; margin-bottom: 10px; gap: 10px; }
+    .voice-btn {
+      background: #dc2626; border: none; width: 50px; height: 50px; border-radius: 50%;
+      color: white; font-size: 24px; cursor: pointer; display: flex; align-items: center;
+      justify-content: center; box-shadow: 0 0 14px rgba(220, 38, 38, 0.6); flex-shrink: 0;
+    }
+    .voice-input-row { display: flex; gap: 6px; }
+    .voice-input-row input {
+      margin: 0; background: rgba(255,255,255,0.12); color: #fff;
+      border: 1.5px solid #475569; font-size: 13.5px; padding: 10px 12px; border-radius: 9px;
+    }
+    .voice-input-row input:focus { border-color: #10b981; background: rgba(255,255,255,0.18); }
+    .voice-go-btn {
+      background: #10b981; color: #0f172a; border: none; padding: 0 14px;
+      border-radius: 9px; font-weight: 800; font-size: 13px; cursor: pointer; white-space: nowrap;
+    }
+
+    .stats { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; margin-bottom: 14px; }
+    .stat-card {
+      background: white; padding: 12px 8px; border-radius: 12px; text-align: center;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.05); border-bottom: 3px solid transparent;
+    }
+    .stat-cash { border-color: #10b981; }
+    .stat-exp { border-color: #f59e0b; }
+    .stat-udhaar { border-color: #ef4444; }
+    .stat-title { font-size: 10.5px; color: #64748b; font-weight: 700; text-transform: uppercase; }
+    .stat-val { font-size: 16px; font-weight: 800; margin-top: 4px; }
+
+    .tabs { display: flex; gap: 4px; margin-bottom: 14px; background: #e2e8f0; padding: 5px; border-radius: 12px; overflow-x: auto; }
+    .tab-btn {
+      flex: 1; padding: 9px 6px; border: none; border-radius: 8px; background: transparent;
+      font-weight: 700; font-size: 11.5px; color: #475569; cursor: pointer; white-space: nowrap;
+    }
+    .tab-btn.active { background: white; color: var(--primary); box-shadow: 0 2px 4px rgba(0,0,0,0.08); }
+
+    .card { background: white; padding: 15px; border-radius: 14px; box-shadow: 0 2px 8px rgba(0,0,0,0.05); margin-bottom: 14px; }
+    .card-title { margin: 0 0 12px 0; font-size: 15px; color: var(--dark); display: flex; justify-content: space-between; align-items: center; }
+
+    input, select {
+      width: 100%; padding: 11px 12px; margin-bottom: 10px; border: 1.5px solid #cbd5e1;
+      border-radius: 9px; font-size: 14px; outline: none;
+    }
+    input:focus, select:focus { border-color: var(--accent); }
+    .row { display: grid; grid-template-columns: 2fr 1fr 1fr; gap: 8px; }
+
+    .btn {
+      width: 100%; padding: 12px; border: none; border-radius: 10px; font-size: 14px;
+      font-weight: 700; color: white; margin-bottom: 8px; cursor: pointer; display: flex;
+      align-items: center; justify-content: center; gap: 8px;
+    }
+    .btn-green { background: linear-gradient(135deg, var(--primary), var(--accent)); }
+    .btn-red { background: linear-gradient(135deg, #dc2626, #ef4444); }
+    .btn-blue { background: linear-gradient(135deg, #1d4ed8, #3b82f6); }
+    .btn-purple { background: linear-gradient(135deg, #6d28d9, #8b5cf6); }
+    .btn-dark { background: #1e293b; }
+    .btn-outline { background: #f8fafc; color: #334155; border: 1.5px solid #cbd5e1; }
+
+    .cart-box { background: #f8fafc; border-radius: 9px; padding: 10px; margin-bottom: 10px; border: 1px dashed #cbd5e1; }
+    .cart-item { display: flex; justify-content: space-between; font-size: 14px; padding: 5px 0; border-bottom: 1px solid #e2e8f0; }
+
+    .report-table { width: 100%; border-collapse: collapse; font-size: 12.5px; margin-top: 8px; }
+    .report-table th, .report-table td { padding: 6px 4px; border-bottom: 1px solid #e2e8f0; text-align: right; }
+    .report-table th:first-child, .report-table td:first-child { text-align: left; }
+
+    .modal-overlay {
+      position: fixed; inset: 0; background: rgba(15,23,42,0.88); display: none;
+      justify-content: center; align-items: flex-start; padding: 20px 14px 80px; z-index: 900; overflow-y: auto;
+    }
+    .receipt-paper {
+      background: #fff; width: 100%; max-width: 370px; border-radius: 12px; padding: 18px;
+      box-shadow: 0 20px 25px -5px rgba(0,0,0,0.4); border-top: 6px solid var(--primary); margin: auto;
+    }
+    .receipt-header { text-align: center; border-bottom: 2px dashed #cbd5e1; padding-bottom: 10px; margin-bottom: 10px; }
+    .receipt-header h2 { margin: 0; font-size: 19px; color: var(--dark); text-transform: uppercase; }
+    .receipt-header p { margin: 3px 0 0; font-size: 12px; color: #64748b; }
+    .receipt-meta { display: flex; justify-content: space-between; font-size: 12px; color: #475569; margin-bottom: 8px; }
+    .receipt-table { width: 100%; font-size: 13px; border-collapse: collapse; margin-bottom: 10px; }
+    .receipt-table th { text-align: left; border-bottom: 1px solid #94a3b8; padding: 5px 0; color: #475569; }
+    .receipt-table td { padding: 5px 0; border-bottom: 1px dotted #e2e8f0; }
+    .receipt-total-box { border-top: 2px dashed #cbd5e1; padding-top: 8px; margin-top: 6px; }
+    .receipt-row { display: flex; justify-content: space-between; font-size: 13px; margin-bottom: 4px; }
+    .receipt-grand { font-size: 17px; font-weight: 800; color: var(--primary); }
+    .stamp {
+      display: inline-block; padding: 4px 12px; border: 2px solid; border-radius: 6px;
+      font-weight: 900; font-size: 12px; letter-spacing: 1px; transform: rotate(-4deg); margin-top: 6px;
+    }
+    .stamp-paid { color: #059669; border-color: #059669; background: #ecfdf5; }
+    .stamp-udhaar { color: #dc2626; border-color: #dc2626; background: #fef2f2; }
+    .barcode {
+      font-family: 'Courier New', monospace; text-align: center; margin-top: 10px;
+      letter-spacing: 4px; font-weight: bold; color: #334155; font-size: 13px;
+    }
+
+    .full-screen-lock {
+      position: fixed; inset: 0; background: linear-gradient(160deg, #0f172a, #1e293b);
+      color: white; display: flex; flex-direction: column; justify-content: center;
+      padding: 20px 14px 80px; z-index: 999; overflow-y: auto;
+    }
+    .dev-scroll-screen {
+      justify-content: flex-start !important;
+      padding-top: 16px !important;
+      padding-bottom: 90px !important;
+    }
+    .lock-card {
+      background: rgba(255,255,255,0.06); padding: 20px; border-radius: 16px;
+      border: 1px solid rgba(255,255,255,0.12); text-align: center; max-width: 480px; width: 100%; margin: 0 auto;
+    }
+    .dark-input { background:#1e293b !important; color:white !important; border-color:#475569 !important; }
+    .dev-sticky-bar {
+      position: sticky; top: 0; background: #1e293b; z-index: 10;
+      display: flex; justify-content: space-between; align-items: center;
+      border-bottom: 1px solid #334155; padding: 10px 4px; margin-bottom: 14px;
+    }
+    .toggle-row {
+      display: flex; justify-content: space-between; align-items: center;
+      background: rgba(255,255,255,0.08); padding: 10px 12px; border-radius: 8px; margin-bottom: 6px; font-size: 12px;
+    }
+    .toggle-row input[type="checkbox"] { width: 18px; height: 18px; margin: 0; flex-shrink: 0; }
+    .dev-section-box {
+      background: rgba(15, 23, 42, 0.75); padding: 14px; border-radius: 12px;
+      border: 1px solid #334155; margin-bottom: 14px; text-align: left;
+    }
+    .field-label { display: block; color: #94a3b8; font-size: 11px; font-weight: 600; margin-bottom: 4px; }
+
+    /* Print only the receipt, not the whole app */
+    @media print {
+      body > *:not(#receiptModal) { display: none !important; }
+      #receiptModal { position: static !important; display: block !important; background: none !important; padding: 0 !important; }
+      .receipt-paper { box-shadow: none !important; margin: 0 auto !important; }
+      .receipt-actions { display: none !important; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- 0. FIRST-TIME SETUP (no PIN is written in the code any more) -->
+  <div id="setupScreen" class="full-screen-lock dev-scroll-screen" style="display:none; z-index:1002;">
+    <div class="lock-card" style="text-align:left;">
+      <div style="font-size:34px; text-align:center;">⚙️</div>
+      <h2 style="margin:4px 0; color:#10b981; text-align:center;">First-Time Setup</h2>
+      <p style="font-size:12px; color:#94a3b8; text-align:center; margin-bottom:14px;">پہلی بار استعمال: دکان اور ڈویلپر PIN سیٹ کریں</p>
+
+      <span class="field-label">Shop Name:</span>
+      <input type="text" id="setupShopName" class="dark-input" placeholder="e.g. Al-Makkah Khaddar House">
+      <span class="field-label">Shop Address & Phone:</span>
+      <input type="text" id="setupShopAddr" class="dark-input" placeholder="e.g. Iqbal Bazar Kamalia • Ph: 0300...">
+      <span class="field-label">Shopkeeper PIN (4+ digits):</span>
+      <input type="password" id="setupShopPin" class="dark-input" inputmode="numeric">
+      <span class="field-label">Developer Admin PIN (6+ digits recommended):</span>
+      <input type="password" id="setupDevPin" class="dark-input" inputmode="numeric">
+      <span class="field-label">Confirm Developer PIN:</span>
+      <input type="password" id="setupDevPin2" class="dark-input" inputmode="numeric">
+      <span class="field-label">Recovery Secret Word:</span>
+      <input type="password" id="setupRecovery" class="dark-input">
+
+      <button class="btn btn-green" onclick="completeSetup()">✅ Save & Start</button>
+      <button class="btn btn-outline" style="background:transparent; color:white;" onclick="document.getElementById('restoreFullFile').click()">⬆️ Restore From Backup File</button>
+      <button class="btn btn-blue" onclick="syncFromCloudNow()">☁️ Fetch Shops From Online Cloud</button>
+    </div>
+  </div>
+
+  <!-- 1. LOGIN SCREEN -->
+  <div id="lockScreen" class="full-screen-lock">
+    <div class="lock-card">
+      <div style="font-size:38px; margin-bottom:6px;">🔐</div>
+      <h2 style="margin:0 0 4px; color:#10b981;" id="lockShopTitle">E Billing System</h2>
+      <p style="font-size:12px; color:#94a3b8; margin-bottom:12px;">
+        سیکیورٹی پن کوڈ درج کر کے سافٹ ویئر ان لاک کریں
+      </p>
+      <div id="cloudLoginStatus" style="font-size:11px; color:#38bdf8; margin-bottom:12px;">☁️ Connecting to Cloud...</div>
+      <input type="password" id="loginPinInput" inputmode="numeric" placeholder="Enter Security PIN" class="dark-input" style="text-align:center; font-size:20px; letter-spacing:4px;" onkeydown="if(event.key==='Enter')handleLogin()">
+      <button class="btn btn-green" onclick="handleLogin()">🔓 Unlock POS</button>
+      <div style="display:flex; justify-content:space-between; margin-top:12px; font-size:12px;">
+        <span style="color:#38bdf8; cursor:pointer;" onclick="openForgotModal()">❓ Forgot PIN?</span>
+        <span style="color:#a78bfa; cursor:pointer;" onclick="promptDevLogin()">🛡️ Developer Panel</span>
+      </div>
+      <small id="brandSignature" style="display:block; margin-top:18px; color:#64748b; font-size:11px;">Protected by Faisal AI Studio</small>
+    </div>
+  </div>
+
+  <!-- 2. FORGOT PIN MODAL -->
+  <div id="forgotModal" class="full-screen-lock" style="display:none; z-index:1000;">
+    <div class="lock-card">
+      <h3 style="margin-top:0; color:#f59e0b;">🔑 PIN Recovery System</h3>
+      <p style="font-size:12px; color:#cbd5e1;">دکان منتخب کریں، پھر ریکوری لفظ یا ڈویلپر پن لکھیں:</p>
+      <select id="recoverShopSelect" class="dark-input"></select>
+      <input type="password" id="recoveryKeyInput" placeholder="Secret Recovery Word / Developer PIN" class="dark-input">
+      <input type="password" id="newRecoveredPin" inputmode="numeric" placeholder="Set New Store PIN (4+ digits)" class="dark-input">
+      <button class="btn btn-green" onclick="recoverPinAction()">✅ Reset Store PIN</button>
+      <button class="btn btn-outline" style="background:transparent; color:white;" onclick="closeForgotModal()">✖ Back</button>
+    </div>
+  </div>
+
+  <!-- 3. DEVELOPER MULTI-SHOP & SAAS ADMIN PANEL -->
+  <div id="devPanelModal" class="full-screen-lock dev-scroll-screen" style="display:none; z-index:1001;">
+    <div class="lock-card" style="text-align:left; max-width:500px;">
+
+      <div class="dev-sticky-bar">
+        <h3 style="margin:0; color:#a78bfa; font-size:16px;">🛡️ Developer SaaS Cloud Admin</h3>
+        <span style="background:#dc2626; color:white; padding:6px 12px; border-radius:8px; font-size:12px; font-weight:bold; cursor:pointer;" onclick="closeDevPanel()">✖ Exit Dev</span>
+      </div>
+
+      <!-- A. REGISTER NEW SHOP CLIENT -->
+      <div class="dev-section-box">
+        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:10px;">
+          <strong style="font-size:13.5px; color:#38bdf8;">➕ 1. Register New Shop Client (Online Sync)</strong>
+          <button onclick="generateRandomShopDemo()" style="background:#334155; color:#38bdf8; border:1px solid #38bdf8; padding:5px 10px; border-radius:6px; font-size:11px; font-weight:bold; cursor:pointer;">🎲 Auto-Fill Demo</button>
+        </div>
+
+        <span class="field-label">1. New Shop Name:</span>
+        <input type="text" id="newShopNameInput" placeholder="e.g. Chenab Khaddar / Ravi Fast Food" class="dark-input" style="margin-bottom:8px;">
+
+        <span class="field-label">2. Shop Logo (Emoji e.g. 👔/🍔/💊 or Image URL):</span>
+        <input type="text" id="newShopLogoInput" placeholder="e.g. 👔 or https://example.com/logo.png" class="dark-input" style="margin-bottom:8px;">
+
+        <span class="field-label">3. Shop Address & Phone Number:</span>
+        <input type="text" id="newShopAddressInput" placeholder="e.g. Saddar Bazar Kamalia • Ph: 0300..." class="dark-input" style="margin-bottom:8px;">
+
+        <span class="field-label">4. Assign Shopkeeper Login PIN:</span>
+        <input type="text" id="newShopPinInput" inputmode="numeric" placeholder="Assign 4-Digit PIN (e.g. 2233)" class="dark-input" style="margin-bottom:10px;">
+
+        <button class="btn btn-blue" style="margin-bottom:0; padding:11px;" onclick="createNewShop()">☁️ Create & Sync Shop Online</button>
+      </div>
+
+      <!-- B. CONFIGURE & CONTROL REGISTERED SHOPS -->
+      <div class="dev-section-box">
+        <strong style="font-size:13.5px; color:#10b981; display:block; margin-bottom:8px;">🏪 2. Select Shop to Manage & Control:</strong>
+        <select id="devShopSelector" onchange="onDevSelectShop()" class="dark-input" style="border-color:#10b981 !important; font-weight:bold; margin-bottom:10px;"></select>
+
+        <div style="display:grid; grid-template-columns:1fr 1fr; gap:8px; align-items:end;">
+          <div>
+            <span class="field-label">Shop Title:</span>
+            <input type="text" id="devShopName" class="dark-input" style="margin-bottom:8px;">
+          </div>
+          <div>
+            <span class="field-label">Logo (Emoji / URL):</span>
+            <input type="text" id="devShopLogo" placeholder="🛒 or https://..." class="dark-input" style="margin-bottom:8px;">
+          </div>
+        </div>
+
+        <span class="field-label">Shop Address & Contact:</span>
+        <input type="text" id="devShopPhone" class="dark-input" style="margin-bottom:8px;">
+
+        <div style="display:grid; grid-template-columns:2fr 1fr; gap:8px; align-items:end; margin-bottom:8px;">
+          <div>
+            <span class="field-label">White-Label Brand Signature:</span>
+            <input type="text" id="devFooterCredit" placeholder="Software by Faisal AI Studio" class="dark-input" style="margin-bottom:0;">
+          </div>
+          <div>
+            <span class="field-label">Theme Color:</span>
+            <input type="color" id="devThemeColor" value="#065f46" class="dark-input" style="height:42px; padding:2px; margin-bottom:0;">
+          </div>
+        </div>
+
+        <p style="font-size:12px; color:#38bdf8; font-weight:bold; margin:8px 0 6px;">🎛️ Feature Access Permissions:</p>
+        <div class="toggle-row"><span>🟢 License Active (Uncheck to Suspend Shop)</span><input type="checkbox" id="permActive"></div>
+        <div class="toggle-row"><span>🎨 Allow Shopkeeper to Edit Own Shop Info</span><input type="checkbox" id="permClientBranding"></div>
+        <div class="toggle-row"><span>📄 Allow PDF & Image Receipt Export</span><input type="checkbox" id="permPdf"></div>
+        <div class="toggle-row"><span>📒 Allow Udhaar Khata Module</span><input type="checkbox" id="permUdhaar"></div>
+        <div class="toggle-row"><span>💸 Allow Expense Tracker Module</span><input type="checkbox" id="permExpense"></div>
+
+        <div style="display:grid; grid-template-columns:1fr 1fr; gap:8px; align-items:end; margin-top:10px;">
+          <div>
+            <span class="field-label">Selected Shop PIN:</span>
+            <input type="text" id="devEditShopPin" inputmode="numeric" class="dark-input" style="margin-bottom:0;">
+          </div>
+          <div>
+            <button class="btn btn-red" style="padding:11px; font-size:12px; margin-bottom:0;" onclick="deleteSelectedShop()">🗑️ Delete Shop</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- C. DEVELOPER MASTER CREDENTIALS -->
+      <div class="dev-section-box">
+        <strong style="font-size:13px; color:#f59e0b; display:block; margin-bottom:4px;">🔐 3. Master Developer Security:</strong>
+        <p style="font-size:11px; color:#94a3b8; margin:0 0 8px;">Leave blank to keep the current PIN / word. They are stored as a secure hash, never as plain text.</p>
+        <div style="display:grid; grid-template-columns:1fr 1fr; gap:8px;">
+          <div>
+            <span class="field-label">New Developer PIN:</span>
+            <input type="password" id="devEditMasterPin" inputmode="numeric" class="dark-input" style="margin-bottom:0;">
+          </div>
+          <div>
+            <span class="field-label">New Recovery Word:</span>
+            <input type="password" id="devEditRecoveryWord" class="dark-input" style="margin-bottom:0;">
+          </div>
+        </div>
+      </div>
+
+      <!-- D. BACKUP -->
+      <div class="dev-section-box">
+        <strong style="font-size:13px; color:#38bdf8; display:block; margin-bottom:8px;">💾 4. Cloud & Local Backup (All Shops):</strong>
+        <div style="display:grid; grid-template-columns:1fr 1fr; gap:8px; margin-bottom:8px;">
+          <button class="btn btn-blue" style="margin:0; font-size:12px;" onclick="exportFullBackup()">⬇️ Download Backup</button>
+          <button class="btn btn-outline" style="margin:0; font-size:12px;" onclick="document.getElementById('restoreFullFile').click()">⬆️ Restore Backup</button>
+        </div>
+        <button class="btn btn-green" style="margin:0; font-size:12px;" onclick="syncFromCloudNow()">🔄 Pull Latest Data From Cloud</button>
+      </div>
+
+      <button class="btn btn-purple" style="padding:14px; font-size:15px;" onclick="saveDevSettings()">☁️ Save & Sync All Settings Online</button>
+    </div>
+  </div>
+
+  <!-- 4. SHOPKEEPER MAIN INTERFACE -->
+  <div class="header">
+    <div class="brand-box">
+      <div class="brand-logo" id="headerLogoBox">🛒</div>
+      <div>
+        <h1><span id="shopTitle">E Billing</span> <span class="sync-pill" id="headerSyncBadge">☁️ Sync</span></h1>
+        <small id="shopSub" style="opacity:0.85; font-size:11px;">Quick & Smart POS</small>
+      </div>
+    </div>
+    <div style="display:flex;">
+      <div class="badge" onclick="promptDevLogin()">🛡️ Dev</div>
+      <div class="badge" style="background:#dc2626;" onclick="logoutPos()">🔒 Lock</div>
+    </div>
+  </div>
+
+  <div class="container">
+    <div class="global-bar">
+      <div style="display:flex; align-items:center; gap:6px;">
+        <span style="font-size:12px; font-weight:bold;">Currency:</span>
+        <select id="currencySelector" onchange="changeCurrency()" style="padding:4px 6px;">
+          <option value="Rs. ">Rs. (PKR)</option>
+          <option value="$ ">$ (USD)</option>
+          <option value="SAR ">SAR (Riyal)</option>
+        </select>
+      </div>
+      <div class="printer-pill" onclick="switchTab('printer', document.getElementById('tabBtnPrinter'))">🖨️ Thermal Printer Setup</div>
+    </div>
+
+    <!-- VOICE ASSISTANT -->
+    <div class="voice-hub">
+      <div class="voice-top">
+        <div>
+          <strong style="color:#10b981; font-size:14px; display:block;">🎙️ Voice Billing Assistant</strong>
+          <span id="voiceStatus" style="font-size:11px; color:#cbd5e1;">مائیک دبائیں یا نیچے بول کر انٹری کریں</span>
+        </div>
+        <button class="voice-btn" onclick="startVoiceAction()">🎤</button>
+      </div>
+      <div class="voice-input-row">
+        <input type="text" id="smartVoiceInput" placeholder="🎙️ بولیں: '1500 روپے سوٹ' یا 'علی کو 2000 کا بیچا'..." oninput="autoVoiceTrigger()" onkeydown="if(event.key==='Enter')runVoiceCommand()">
+        <button class="voice-go-btn" onclick="runVoiceCommand()">⚡ Run</button>
+      </div>
+    </div>
+
+    <!-- STATS (reset automatically every day) -->
+    <div class="stats">
+      <div class="stat-card stat-cash">
+        <div class="stat-title">Today Net Cash (گلہ)</div>
+        <div class="stat-val" style="color:#059669;" id="netCash">Rs. 0</div>
+      </div>
+      <div class="stat-card stat-exp">
+        <div class="stat-title">Today Expenses</div>
+        <div class="stat-val" style="color:#d97706;" id="todayExp">Rs. 0</div>
+      </div>
+      <div class="stat-card stat-udhaar">
+        <div class="stat-title">Market Udhaar</div>
+        <div class="stat-val" style="color:#dc2626;" id="totalUdhaar">Rs. 0</div>
+      </div>
+    </div>
+
+    <!-- TABS -->
+    <div class="tabs">
+      <button class="tab-btn active" onclick="switchTab('pos', this)">🧾 New Bill</button>
+      <button class="tab-btn" id="tabBtnUdhaar" onclick="switchTab('udhaar', this)">📒 Udhaar (<span id="uCount">0</span>)</button>
+      <button class="tab-btn" id="tabBtnExpense" onclick="switchTab('expense', this)">💸 Expense</button>
+      <button class="tab-btn" id="tabBtnPrinter" onclick="switchTab('printer', this)">🖨️ Printer</button>
+      <button class="tab-btn" onclick="switchTab('settings', this)">🔑 Settings</button>
+    </div>
+
+    <!-- TAB 1: POS BILLING -->
+    <div id="tab-pos">
+      <div class="card">
+        <div class="anonymous-badge" onclick="setAnonymousCustomer()">
+          <span>⚡ نام / فون کے بغیر پرچی بنائیں (خواتین یا کیش کسٹمر)</span>
+          <span style="background:#f59e0b; color:white; padding:2px 8px; border-radius:6px; font-size:11px;">1-Click</span>
+        </div>
+
+        <h3 class="card-title"><span>Customer Details</span> <small style="color:#64748b;" id="liveDate"></small></h3>
+        <input type="text" id="custName" placeholder="Customer Name (اختیاری - خالی چھوڑ سکتے ہیں)">
+        <input type="tel" id="custPhone" placeholder="WhatsApp Number (e.g. 03001234567)">
+
+        <h3 class="card-title" style="margin-top:10px;">Add Items</h3>
+        <div class="row">
+          <input type="text" id="itemName" placeholder="Suit / Item Description">
+          <input type="number" id="itemQty" value="1" min="1" placeholder="Qty">
+          <input type="number" id="itemPrice" min="0" placeholder="Rate">
+        </div>
+        <button class="btn btn-outline" onclick="addItemToCart()">➕ Add Item to Parchi</button>
+
+        <div class="cart-box" id="cartBox" style="display:none;">
+          <div id="cartItemsList"></div>
+          <div style="display:flex; justify-content:space-between; align-items:center; margin-top:8px;">
+            <span style="font-size:13px; font-weight:600;">Discount:</span>
+            <input type="number" id="discountInput" value="0" min="0" oninput="renderCart()" style="width:100px; margin:0; padding:6px;">
+          </div>
+          <div style="display:flex; justify-content:space-between; font-weight:800; font-size:16px; margin-top:8px; color:var(--primary);">
+            <span>Grand Total:</span>
+            <span id="cartGrandTotal">Rs. 0</span>
+          </div>
+        </div>
+
+        <button class="btn btn-green" onclick="generateBill(false)">✅ Cash Bill & Print</button>
+        <button class="btn btn-red" id="btnMakeUdhaar" onclick="generateBill(true)">📒 Save to Udhaar (ادھار)</button>
+      </div>
+    </div>
+
+    <!-- TAB 2: UDHAAR -->
+    <div id="tab-udhaar" style="display:none;">
+      <div class="card">
+        <h3 class="card-title">Udhaar (Credit) Ledger</h3>
+        <div id="udhaarList"></div>
+      </div>
+    </div>
+
+    <!-- TAB 3: EXPENSE + DAILY REPORT -->
+    <div id="tab-expense" style="display:none;">
+      <div class="card">
+        <h3 class="card-title">Today's Expenses (آج کا خرچہ)</h3>
+        <input type="text" id="expTitle" placeholder="Kharcha (e.g. Chai, Bijli)">
+        <input type="number" id="expAmount" min="0" placeholder="Amount">
+        <button class="btn btn-dark" onclick="addExpense()">➕ Save Expense</button>
+        <div id="expList" style="margin-top:12px; font-size:13px;"></div>
+      </div>
+      <div class="card">
+        <h3 class="card-title">📊 Last 7 Days Report</h3>
+        <div id="dailyReport"></div>
+      </div>
+    </div>
+
+    <!-- TAB 4: PRINTER SETUP -->
+    <div id="tab-printer" style="display:none;">
+      <div class="card">
+        <h3 class="card-title">🖨️ تھرمل پرنٹر سیٹ اپ</h3>
+        <div style="background:#f8fafc; padding:12px; border-radius:10px; border:1px solid #cbd5e1; font-size:13px; line-height:1.6;">
+          <strong style="color:#059669;">اینڈرائیڈ میں بلوٹوتھ پرنٹر چلانے کا طریقہ:</strong>
+          <ol style="padding-left:18px; margin:6px 0;">
+            <li>پلے اسٹور سے مفت <strong>RawBT Print Service</strong> ایپ ڈاؤن لوڈ کریں۔</li>
+            <li>RawBT کھول کر اپنا بلوٹوتھ تھرمل پرنٹر پیئر کریں۔</li>
+            <li>بس! اب جب بھی آپ <strong>Direct Bluetooth Print</strong> دبائیں گے، پرچی خودکار پرنٹ نکل آئے گی۔</li>
+          </ol>
+        </div>
+        <button class="btn btn-blue" style="margin-top:12px;" onclick="window.open('https://play.google.com/store/apps/details?id=ru.a402d.rawbtprinter', '_blank')">📲 Download RawBT from Play Store</button>
+        <button class="btn btn-outline" onclick="printTestSlip()">🧾 Print Test Receipt</button>
+      </div>
+    </div>
+
+    <!-- TAB 5: SHOPKEEPER SETTINGS -->
+    <div id="tab-settings" style="display:none;">
+      <div class="card" id="clientBrandingCard" style="display:none;">
+        <h3 class="card-title">🎨 Shop Info</h3>
+        <input type="text" id="clientEditName" placeholder="Shop Name">
+        <input type="text" id="clientEditPhone" placeholder="Shop Address & Contact">
+        <button class="btn btn-blue" onclick="saveClientBranding()">💾 Update Shop Details</button>
+      </div>
+
+      <div class="card">
+        <h3 class="card-title">💾 Backup (ڈیٹا محفوظ کریں)</h3>
+        <p style="font-size:12px; color:#64748b; margin-top:0;">آپ کا ڈیٹا آن لائن کلاؤڈ پر بھی محفوظ ہو رہا ہے، اور آپ یہاں سے آف لائن فائل بھی ڈاؤن لوڈ کر سکتے ہیں۔</p>
+        <button class="btn btn-blue" onclick="exportShopBackup()">⬇️ Download My Shop Backup</button>
+        <button class="btn btn-outline" onclick="document.getElementById('restoreShopFile').click()">⬆️ Restore My Shop Backup</button>
+      </div>
+
+      <div class="card">
+        <h3 class="card-title">🔑 Change Shopkeeper PIN</h3>
+        <p style="font-size:12px; color:#64748b; margin-top:0;">دکاندار یہاں سے اپنا لاگ ان پن تبدیل کر سکتا ہے۔</p>
+        <input type="password" id="oldShopPin" inputmode="numeric" placeholder="Current PIN">
+        <input type="password" id="newShopPin" inputmode="numeric" placeholder="New PIN (4+ digits)">
+        <button class="btn btn-green" onclick="changeShopkeeperPin()">✅ Update My PIN</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- DIGITAL RECEIPT MODAL -->
+  <div class="modal-overlay" id="receiptModal">
+    <div class="receipt-paper">
+      <div class="receipt-header">
+        <h2 id="rShopName">SHOP</h2>
+        <p id="rShopPhone">Digital Tax Invoice</p>
+      </div>
+      <div class="receipt-meta">
+        <div><strong>Bill #:</strong> <span id="rInvoiceNo">INV-101</span></div>
+        <div><strong>Date:</strong> <span id="rDate">--</span></div>
+      </div>
+      <div class="receipt-meta">
+        <div><strong>Customer:</strong> <span id="rCustName">Walk-in</span></div>
+        <div><strong>Contact:</strong> <span id="rCustPhone">--</span></div>
+      </div>
+      <table class="receipt-table">
+        <thead>
+          <tr><th>Item</th><th>Qty</th><th>Price</th><th style="text-align:right;">Total</th></tr>
+        </thead>
+        <tbody id="rItemsBody"></tbody>
+      </table>
+      <div class="receipt-total-box">
+        <div class="receipt-row"><span>Sub-Total:</span> <span id="rSubTotal">0</span></div>
+        <div class="receipt-row"><span>Discount:</span> <span id="rDiscount">- 0</span></div>
+        <div class="receipt-row receipt-grand"><span>TOTAL:</span> <span id="rGrandTotal">0</span></div>
+      </div>
+      <div style="text-align:center;">
+        <div id="rStamp" class="stamp stamp-paid">PAID IN FULL ✓</div>
+        <div class="barcode">||| |||| || ||||| ||| ||||</div>
+        <small id="rFooterCredit" style="color:#64748b; display:block; margin-top:4px;">Software by Faisal AI Studio</small>
+      </div>
+
+      <div class="receipt-actions" style="margin-top:14px;">
+        <div id="pdfActionsBox">
+          <button class="btn btn-red" onclick="saveAndSharePDF()">📄 1. Save PDF & Share on WhatsApp</button>
+          <button class="btn btn-blue" onclick="saveAndShareImage()">🖼️ 2. Save HD Image & Share on WhatsApp</button>
+        </div>
+        <button class="btn btn-green" id="btnShareWa" onclick="shareReceiptWhatsApp()">💬 3. Direct WhatsApp Text Message</button>
+        <button class="btn btn-blue" onclick="shareReceiptSMS()">📩 Send by Text Message (SMS)</button>
+        <button class="btn btn-purple" onclick="printThermalRawBT()">🖨️ Direct Bluetooth Print (تھرمل)</button>
+        <button class="btn btn-dark" onclick="window.print()">🖨️ System Print / Save PDF</button>
+        <button class="btn btn-outline" onclick="closeReceiptModal()">✖ Close</button>
+      </div>
+    </div>
+  </div>
+
+  <canvas id="receiptCanvas" style="display:none;"></canvas>
+  <input type="file" id="restoreFullFile" accept=".json,application/json" style="display:none;" onchange="restoreFullBackup(this)">
+  <input type="file" id="restoreShopFile" accept=".json,application/json" style="display:none;" onchange="restoreShopBackup(this)">
+
+  <!-- Firebase (free cloud database). The app still works offline without it. -->
+  <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
+
+  <script>
+    "use strict";
+    const MASTER_KEY = "ebilling_master_v5";
+    const PIN_SALT = "ebilling::faisal-ai-studio::";
+    const OLD_DEFAULT_DEV_PIN = "786092";
+
+    // ---------- HELPERS ----------
+    // Pure-JS SHA-256 (works offline, inside APK WebView and on file://)
+    function sha256(text) {
+      const ascii = unescape(encodeURIComponent(text));
+      function rr(v, a) { return (v >>> a) | (v << (32 - a)); }
+      const maxWord = Math.pow(2, 32);
+      let result = "";
+      const words = [];
+      const bitLen = ascii.length * 8;
+      let hash = [], k = [];
+      let primeCounter = 0;
+      const isComposite = {};
+      for (let c = 2; primeCounter < 64; c++) {
+        if (!isComposite[c]) {
+          for (let i = 0; i < 313; i += c) isComposite[i] = c;
+          hash[primeCounter] = (Math.pow(c, 0.5) * maxWord) | 0;
+          k[primeCounter++] = (Math.pow(c, 1 / 3) * maxWord) | 0;
+        }
+      }
+      let msg = ascii + "\x80";
+      while (msg.length % 64 - 56) msg += "\x00";
+      for (let i = 0; i < msg.length; i++) {
+        const j = msg.charCodeAt(i);
+        words[i >> 2] |= j << ((3 - i) % 4) * 8;
+      }
+      words[words.length] = (bitLen / maxWord) | 0;
+      words[words.length] = bitLen;
+      for (let j = 0; j < words.length;) {
+        const w = words.slice(j, j += 16);
+        const oldHash = hash;
+        hash = hash.slice(0, 8);
+        for (let i = 0; i < 64; i++) {
+          const w15 = w[i - 15], w2 = w[i - 2];
+          const a = hash[0], e = hash[4];
+          const temp1 = hash[7] + (rr(e, 6) ^ rr(e, 11) ^ rr(e, 25)) + ((e & hash[5]) ^ ((~e) & hash[6])) + k[i] +
+            (w[i] = (i < 16) ? w[i] : (w[i - 16] + (rr(w15, 7) ^ rr(w15, 18) ^ (w15 >>> 3)) + w[i - 7] + (rr(w2, 17) ^ rr(w2, 19) ^ (w2 >>> 10))) | 0);
+          const temp2 = (rr(a, 2) ^ rr(a, 13) ^ rr(a, 22)) + ((a & hash[1]) ^ (a & hash[2]) ^ (hash[1] & hash[2]));
+          hash = [(temp1 + temp2) | 0].concat(hash);
+          hash[4] = (hash[4] + temp1) | 0;
+        }
+        for (let i = 0; i < 8; i++) hash[i] = (hash[i] + oldHash[i]) | 0;
+      }
+      for (let i = 0; i < 8; i++) {
+        for (let j = 3; j + 1; j--) {
+          const b = (hash[i] >> (j * 8)) & 255;
+          result += ((b < 16) ? "0" : "") + b.toString(16);
+        }
+      }
+      return result;
+    }
+    function hashSecret(s) { return sha256(PIN_SALT + String(s).trim().toLowerCase()); }
+
+    // Stops names like <b> or <script> from breaking the page
+    function esc(s) {
+      return String(s == null ? "" : s)
+        .replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;")
+        .replace(/"/g, "&quot;").replace(/'/g, "&#39;");
+    }
+
+    // Converts Urdu (۱۵۰۰) and Arabic (١٥٠٠) digits to 1500, and removes commas like 1,500
+    function normalizeDigits(s) {
+      return String(s || "")
+        .replace(/[\u06F0-\u06F9]/g, d => String(d.charCodeAt(0) - 0x06F0))
+        .replace(/[\u0660-\u0669]/g, d => String(d.charCodeAt(0) - 0x0660))
+        .replace(/(\d)[,٬](?=\d{3})/g, "$1");
+    }
+
+    function dayKey(d) {
+      d = d || new Date();
+      return d.getFullYear() + "-" + String(d.getMonth() + 1).padStart(2, "0") + "-" + String(d.getDate()).padStart(2, "0");
+    }
+    function nowStr() { return new Date().toLocaleString([], { dateStyle: "short", timeStyle: "short" }); }
+    function isPin(p) { return /^\d{4,}$/.test(p); }
+
+    function downloadText(text, fileName) {
+      triggerBlobDownload(new Blob([text], { type: "application/json" }), fileName);
+    }
+
+    // ---------- DATA LOAD + MIGRATION ----------
+    let masterData = null;
+    let usingOldDefaultDevPin = false;
+
+    function newShopObject(name, addr, logo, pin) {
+      return {
+        id: "shop_" + Date.now() + "_" + Math.floor(Math.random() * 1000),
+        shopName: name, shopPhone: addr, shopLogo: logo || "🛒",
+        footerCredit: "Software by Faisal AI Studio", themeColor: "#065f46", currencySymbol: "Rs. ",
+        shopPin: pin, isActive: true, allowClientBranding: false, allowPdf: true, allowUdhaar: true, allowExpense: true,
+        sales: [], expenses: [], udhaarList: [], invoiceCounter: 1001
+      };
+    }
+
+    // Upgrades old v5 data: hashes the plain-text dev PIN / recovery word, adds dates to old data
+    function migrate(d) {
+      if (!d || !Array.isArray(d.shops) || d.shops.length === 0) return null;
+      if (d.devPin) {
+        d.devPinHash = hashSecret(d.devPin);
+        delete d.devPin;
+      }
+      if (d.recoveryWord) {
+        d.recoveryHash = hashSecret(d.recoveryWord);
+        delete d.recoveryWord;
+      }
+      usingOldDefaultDevPin = (d.devPinHash === hashSecret(OLD_DEFAULT_DEV_PIN));
+      const today = dayKey();
+      d.shops.forEach(s => {
+        if (!Array.isArray(s.sales)) s.sales = [];
+        if (s.grossCash && s.grossCash > 0) {
+          s.sales.push({ type: "opening", invNo: "OPENING", name: "Previous Balance", amount: s.grossCash, day: today, time: nowStr() });
+        }
+        delete s.grossCash;
+        if (!Array.isArray(s.expenses)) s.expenses = [];
+        s.expenses.forEach(e => { if (!e.day) e.day = today; });
+        if (!Array.isArray(s.udhaarList)) s.udhaarList = [];
+        if (!s.currencySymbol) s.currencySymbol = "Rs. ";
+        if (!s.footerCredit) s.footerCredit = "Software by Faisal AI Studio";
+        if (!s.themeColor) s.themeColor = "#065f46";
+        if (!s.invoiceCounter) s.invoiceCounter = 1001;
+      });
+      if (!d.shops.some(s => s.id === d.activeShopId)) d.activeShopId = d.shops[0].id;
+      d.version = 6;
+      return d;
+    }
+
+    try { masterData = migrate(JSON.parse(localStorage.getItem(MASTER_KEY))); } catch (e) { masterData = null; }
+
+    function getActiveShop() {
+      return masterData.shops.find(x => x.id === masterData.activeShopId) || masterData.shops[0];
+    }
+
+    function cur(val) {
+      return `${getActiveShop().currencySymbol}${Number(val || 0).toLocaleString()}`;
+    }
+
+    function saveMasterData(immediateCloud) {
+      try {
+        localStorage.setItem(MASTER_KEY, JSON.stringify(masterData));
+      } catch (e) {
+        alert("⚠️ Storage full! Please download a backup now.");
+      }
+      applyPermissions();
+      renderUI();
+      pushToCloud(immediateCloud);
+    }
+
+    // ---------- FIRST-TIME SETUP ----------
+    function completeSetup() {
+      const name = document.getElementById("setupShopName").value.trim();
+      const addr = document.getElementById("setupShopAddr").value.trim();
+      const shopPin = normalizeDigits(document.getElementById("setupShopPin").value.trim());
+      const devPin = normalizeDigits(document.getElementById("setupDevPin").value.trim());
+      const devPin2 = normalizeDigits(document.getElementById("setupDevPin2").value.trim());
+      const rec = document.getElementById("setupRecovery").value.trim();
+
+      if (!name || !addr) { alert("Shop name and address are required."); return; }
+      if (!isPin(shopPin)) { alert("Shop PIN must be 4+ digits."); return; }
+      if (!isPin(devPin)) { alert("Developer PIN must be 4+ digits."); return; }
+      if (devPin !== devPin2) { alert("Developer PINs do not match."); return; }
+      if (devPin === shopPin) { alert("Developer PIN and Shop PIN must be different."); return; }
+      if (rec.length < 4) { alert("Recovery word must be at least 4 letters."); return; }
+
+      const shop = newShopObject(name, addr, "🛒", shopPin);
+      masterData = { version: 6, devPinHash: hashSecret(devPin), recoveryHash: hashSecret(rec), activeShopId: shop.id, shops: [shop] };
+      saveMasterData();
+      document.getElementById("setupScreen").style.display = "none";
+      document.getElementById("lockScreen").style.display = "flex";
+      alert("✅ Setup complete! Now login with your Shop PIN.");
+    }
+
+    // ---------- LOGIN (with wrong-PIN lockout) ----------
+    let failedAttempts = 0;
+    let lockedUntil = 0;
+
+    function checkLockout() {
+      if (Date.now() < lockedUntil) {
+        alert(`⛔ Too many wrong PINs. Try again in ${Math.ceil((lockedUntil - Date.now()) / 1000)} seconds.`);
+        return true;
+      }
+      return false;
+    }
+    function registerFail() {
+      failedAttempts++;
+      if (failedAttempts >= 5) {
+        lockedUntil = Date.now() + 30000;
+        failedAttempts = 0;
+        alert("⛔ 5 wrong attempts. Locked for 30 seconds.");
+      } else {
+        alert("❌ Invalid PIN Code!");
+      }
+    }
+
+    function handleLogin() {
+      if (checkLockout()) return;
+      const inputEl = document.getElementById("loginPinInput");
+      const input = normalizeDigits(inputEl.value.trim());
+      inputEl.value = "";
+      if (!input) return;
+
+      if (hashSecret(input) === masterData.devPinHash) {
+        failedAttempts = 0;
+        openDevPanel();
+        return;
+      }
+
+      const matchedShop = masterData.shops.find(s => s.shopPin === input);
+      if (!matchedShop) { registerFail(); return; }
+
+      if (!matchedShop.isActive) {
+        alert(`⛔ LICENSE SUSPENDED: (${matchedShop.shopName}) کا سافٹ ویئر معطل ہے۔ ڈویلپر سے رابطہ کریں۔`);
+        return;
+      }
+
+      failedAttempts = 0;
+      masterData.activeShopId = matchedShop.id;
+      saveMasterData();
+      document.getElementById("lockScreen").style.display = "none";
+    }
+
+    function logoutPos() {
+      closeReceiptModal();
+      document.getElementById("lockScreen").style.display = "flex";
+    }
+
+    function promptDevLogin() {
+      if (checkLockout()) return;
+      const code = prompt("🛡️ Enter Developer Admin PIN:");
+      if (!code) return;
+      if (hashSecret(normalizeDigits(code.trim())) === masterData.devPinHash) {
+        failedAttempts = 0;
+        openDevPanel();
+      } else {
+        registerFail();
+      }
+    }
+
+    // ---------- DEVELOPER PANEL ----------
+    // Separate selection: managing a shop here no longer switches the shopkeeper's screen
+    let devSelectedShopId = null;
+    function getDevShop() {
+      return masterData.shops.find(s => s.id === devSelectedShopId) || masterData.shops[0];
+    }
+
+    function openDevPanel() {
+      devSelectedShopId = masterData.activeShopId;
+      populateDevShopDropdown();
+      document.getElementById("devEditMasterPin").value = "";
+      document.getElementById("devEditRecoveryWord").value = "";
+      const modal = document.getElementById("devPanelModal");
+      modal.style.display = "flex";
+      modal.scrollTop = 0;
+      if (usingOldDefaultDevPin) {
+        alert("⚠️ You are still using the old default Developer PIN, which was visible in the old code. Please set a new Developer PIN in section 3 and save.");
+      }
+    }
+
+    function closeDevPanel() {
+      document.getElementById("devPanelModal").style.display = "none";
+    }
+
+    function populateDevShopDropdown() {
+      const sel = document.getElementById("devShopSelector");
+      sel.innerHTML = "";
+      masterData.shops.forEach(s => {
+        const opt = document.createElement("option");
+        opt.value = s.id;
+        opt.textContent = `${s.shopName} (PIN: ${s.shopPin})${s.isActive ? "" : " - SUSPENDED"}`;
+        if (s.id === devSelectedShopId) opt.selected = true;
+        sel.appendChild(opt);
+      });
+      onDevSelectShop();
+    }
+
+    function onDevSelectShop() {
+      devSelectedShopId = document.getElementById("devShopSelector").value;
+      const shop = getDevShop();
+      if (!shop) return;
+      document.getElementById("devShopName").value = shop.shopName;
+      document.getElementById("devShopPhone").value = shop.shopPhone;
+      document.getElementById("devShopLogo").value = shop.shopLogo || "🛒";
+      document.getElementById("devFooterCredit").value = shop.footerCredit || "Software by Faisal AI Studio";
+      document.getElementById("devThemeColor").value = shop.themeColor || "#065f46";
+      document.getElementById("permActive").checked = shop.isActive;
+      document.getElementById("permClientBranding").checked = shop.allowClientBranding === true;
+      document.getElementById("permPdf").checked = shop.allowPdf;
+      document.getElementById("permUdhaar").checked = shop.allowUdhaar;
+      document.getElementById("permExpense").checked = shop.allowExpense;
+      document.getElementById("devEditShopPin").value = shop.shopPin;
+    }
+
+    function pinTaken(pin, exceptShopId) {
+      return masterData.shops.some(s => s.shopPin === pin && s.id !== exceptShopId) || hashSecret(pin) === masterData.devPinHash;
+    }
+
+    function generateRandomShopDemo() {
+      const demos = [
+        { name: "Chenab Fabrics & Khaddar", logo: "👔", addr: "Main Iqbal Bazar Kamalia • Ph: 0300-9876543" },
+        { name: "Ravi Fast Food & Cafe", logo: "🍔", addr: "College Road Kamalia • Ph: 0312-3456789" },
+        { name: "Al-Madina Pharmacy", logo: "💊", addr: "Thana Road Kamalia • Ph: 0305-1122334" },
+        { name: "Apex Mobile & Gadgets", logo: "📱", addr: "Zaildar Chowk Kamalia • Ph: 0321-7788990" }
+      ];
+      const pick = demos[Math.floor(Math.random() * demos.length)];
+      document.getElementById("newShopNameInput").value = pick.name;
+      document.getElementById("newShopLogoInput").value = pick.logo;
+      document.getElementById("newShopAddressInput").value = pick.addr;
+      let pin;
+      do { pin = String(Math.floor(1000 + Math.random() * 9000)); } while (pinTaken(pin, null));
+      document.getElementById("newShopPinInput").value = pin;
+    }
+
+    function createNewShop() {
+      const name = document.getElementById("newShopNameInput").value.trim();
+      const logo = document.getElementById("newShopLogoInput").value.trim() || "🛒";
+      const addr = document.getElementById("newShopAddressInput").value.trim();
+      const pin = normalizeDigits(document.getElementById("newShopPinInput").value.trim());
+
+      if (!name || !addr || !isPin(pin)) {
+        alert("Please enter Shop Name, Address, and a 4+ digit PIN.");
+        return;
+      }
+      if (pinTaken(pin, null)) {
+        alert("⚠️ یہ PIN پہلے سے استعمال میں ہے۔ کوئی اور PIN رکھیں۔");
+        return;
+      }
+
+      const newShop = newShopObject(name, addr, logo, pin);
+      masterData.shops.push(newShop);
+      devSelectedShopId = newShop.id;
+      saveMasterData();
+      populateDevShopDropdown();
+
+      ["newShopNameInput", "newShopLogoInput", "newShopAddressInput", "newShopPinInput"].forEach(id => document.getElementById(id).value = "");
+      alert(`✅ نئی دکان "${name}" کامیابی سے ایڈ ہو گئی ہے!`);
+    }
+
+    function deleteSelectedShop() {
+      if (masterData.shops.length <= 1) {
+        alert("کم از کم 1 دکان کا سسٹم میں ہونا لازمی ہے۔");
+        return;
+      }
+      const shop = getDevShop();
+      if (!confirm(`کیا آپ واقعی دکان "${shop.shopName}" کو ڈیلیٹ کرنا چاہتے ہیں؟ اس کا سارا ڈیٹا ختم ہو جائے گا۔`)) return;
+      masterData.shops = masterData.shops.filter(s => s.id !== shop.id);
+      if (masterData.activeShopId === shop.id) {
+        masterData.activeShopId = masterData.shops[0].id;
+        document.getElementById("lockScreen").style.display = "flex";
+      }
+      devSelectedShopId = masterData.shops[0].id;
+      saveMasterData();
+      populateDevShopDropdown();
+    }
+
+    function saveDevSettings() {
+      const shop = getDevShop();
+      const newShopP = normalizeDigits(document.getElementById("devEditShopPin").value.trim());
+      const newDevP = normalizeDigits(document.getElementById("devEditMasterPin").value.trim());
+      const newRec = document.getElementById("devEditRecoveryWord").value.trim();
+
+      if (!isPin(newShopP)) { alert("Shop PIN کم از کم 4 ہندسوں کا ہونا چاہیے۔"); return; }
+      if (masterData.shops.some(s => s.shopPin === newShopP && s.id !== shop.id)) { alert("⚠️ یہ Shop PIN کسی اور دکان کا ہے۔"); return; }
+      if (newDevP) {
+        if (!isPin(newDevP)) { alert("Developer PIN کم از کم 4 ہندسوں کا ہونا چاہیے۔"); return; }
+        if (masterData.shops.some(s => s.shopPin === newDevP) || newDevP === newShopP) { alert("⚠️ Developer PIN کسی دکان کے PIN جیسا نہیں ہو سکتا۔"); return; }
+      } else if (hashSecret(newShopP) === masterData.devPinHash) {
+        alert("⚠️ Shop PIN، Developer PIN جیسا نہیں ہو سکتا۔"); return;
+      }
+      if (newRec && newRec.length < 4) { alert("Recovery word کم از کم 4 حروف کا رکھیں۔"); return; }
+
+      shop.shopName = document.getElementById("devShopName").value.trim() || shop.shopName;
+      shop.shopLogo = document.getElementById("devShopLogo").value.trim() || "🛒";
+      shop.shopPhone = document.getElementById("devShopPhone").value.trim() || shop.shopPhone;
+      shop.footerCredit = document.getElementById("devFooterCredit").value.trim() || "Software by Faisal AI Studio";
+      shop.themeColor = document.getElementById("devThemeColor").value || "#065f46";
+      shop.isActive = document.getElementById("permActive").checked;
+      shop.allowClientBranding = document.getElementById("permClientBranding").checked;
+      shop.allowPdf = document.getElementById("permPdf").checked;
+      shop.allowUdhaar = document.getElementById("permUdhaar").checked;
+      shop.allowExpense = document.getElementById("permExpense").checked;
+      shop.shopPin = newShopP;
+
+      if (newDevP) { masterData.devPinHash = hashSecret(newDevP); usingOldDefaultDevPin = false; }
+      if (newRec) masterData.recoveryHash = hashSecret(newRec);
+
+      // If the shop that is currently open was suspended, lock the screen
+      if (shop.id === masterData.activeShopId && !shop.isActive) {
+        document.getElementById("lockScreen").style.display = "flex";
+      }
+
+      saveMasterData();
+      populateDevShopDropdown();
+      alert("✅ تمام ڈویلپر کنٹرولز اور پرمیشنز محفوظ ہو گئیں!");
+      closeDevPanel();
+    }
+
+    function saveClientBranding() {
+      const shop = getActiveShop();
+      if (!shop.allowClientBranding) return;
+      shop.shopName = document.getElementById("clientEditName").value.trim() || shop.shopName;
+      shop.shopPhone = document.getElementById("clientEditPhone").value.trim() || shop.shopPhone;
+      saveMasterData();
+      alert("✅ معلومات اپڈیٹ ہو گئیں!");
+    }
+
+    function changeShopkeeperPin() {
+      const shop = getActiveShop();
+      const oldP = normalizeDigits(document.getElementById("oldShopPin").value.trim());
+      const newP = normalizeDigits(document.getElementById("newShopPin").value.trim());
+      if (oldP !== shop.shopPin) { alert("❌ پرانا PIN درست نہیں ہے!"); return; }
+      if (!isPin(newP)) { alert("نیا PIN کم از کم 4 ہندسوں کا رکھیں۔"); return; }
+      if (pinTaken(newP, shop.id)) { alert("⚠️ یہ PIN استعمال نہیں ہو سکتا، کوئی اور رکھیں۔"); return; }
+      shop.shopPin = newP;
+      saveMasterData();
+      document.getElementById("oldShopPin").value = "";
+      document.getElementById("newShopPin").value = "";
+      alert("✅ شاپ کیپر کا PIN تبدیل ہو گیا ہے!");
+    }
+
+    // ---------- FORGOT PIN (now resets the shop you choose) ----------
+    function openForgotModal() {
+      const sel = document.getElementById("recoverShopSelect");
+      sel.innerHTML = "";
+      masterData.shops.forEach(s => {
+        const opt = document.createElement("option");
+        opt.value = s.id;
+        opt.textContent = s.shopName;
+        sel.appendChild(opt);
+      });
+      document.getElementById("forgotModal").style.display = "flex";
+    }
+    function closeForgotModal() {
+      document.getElementById("recoveryKeyInput").value = "";
+      document.getElementById("newRecoveredPin").value = "";
+      document.getElementById("forgotModal").style.display = "none";
+    }
+    function recoverPinAction() {
+      if (checkLockout()) return;
+      const key = normalizeDigits(document.getElementById("recoveryKeyInput").value.trim());
+      const newPin = normalizeDigits(document.getElementById("newRecoveredPin").value.trim());
+      const shop = masterData.shops.find(s => s.id === document.getElementById("recoverShopSelect").value);
+      if (!shop) return;
+      const h = hashSecret(key);
+      if (h === masterData.recoveryHash || h === masterData.devPinHash) {
+        if (!isPin(newPin)) { alert("Enter at least 4 digits."); return; }
+        if (pinTaken(newPin, shop.id)) { alert("⚠️ یہ PIN استعمال نہیں ہو سکتا، کوئی اور رکھیں۔"); return; }
+        failedAttempts = 0;
+        shop.shopPin = newPin;
+        saveMasterData();
+        alert(`✅ "${shop.shopName}" کا PIN تبدیل ہو گیا ہے۔`);
+        closeForgotModal();
+      } else {
+        registerFail();
+      }
+    }
+
+    function applyPermissions() {
+      const shop = getActiveShop();
+      document.documentElement.style.setProperty("--primary", shop.themeColor || "#065f46");
+      document.getElementById("tabBtnUdhaar").style.display = shop.allowUdhaar ? "block" : "none";
+      document.getElementById("btnMakeUdhaar").style.display = shop.allowUdhaar ? "flex" : "none";
+      document.getElementById("tabBtnExpense").style.display = shop.allowExpense ? "block" : "none";
+      document.getElementById("clientBrandingCard").style.display = shop.allowClientBranding ? "block" : "none";
+      document.getElementById("pdfActionsBox").style.display = shop.allowPdf ? "block" : "none";
+      if (!shop.allowUdhaar && document.getElementById("tab-udhaar").style.display === "block") switchTab("pos", document.querySelector(".tab-btn"));
+      if (!shop.allowExpense && document.getElementById("tab-expense").style.display === "block") switchTab("pos", document.querySelector(".tab-btn"));
+    }
+
+    // ---------- BACKUP & RESTORE ----------
+    function exportFullBackup() {
+      const data = { type: "ebilling-full", exportedAt: new Date().toISOString(), data: masterData };
+      downloadText(JSON.stringify(data, null, 2), `EBilling_Full_Backup_${dayKey()}.json`);
+    }
+
+    function exportShopBackup() {
+      const s = getActiveShop();
+      const shopData = {
+        id: s.id, shopName: s.shopName, sales: s.sales, expenses: s.expenses,
+        udhaarList: s.udhaarList, invoiceCounter: s.invoiceCounter
+      };
+      const data = { type: "ebilling-shop", exportedAt: new Date().toISOString(), shop: shopData };
+      const safeName = s.shopName.replace(/[^\w\u0600-\u06FF]+/g, "_");
+      downloadText(JSON.stringify(data, null, 2), `${safeName}_Backup_${dayKey()}.json`);
+    }
+
+    function readJsonFile(input, cb) {
+      const file = input.files && input.files[0];
+      input.value = "";
+      if (!file) return;
+      const reader = new FileReader();
+      reader.onload = () => {
+        try { cb(JSON.parse(reader.result)); }
+        catch (e) { alert("❌ یہ فائل درست بیک اپ نہیں ہے۔"); }
+      };
+      reader.readAsText(file);
+    }
+
+    function restoreFullBackup(input) {
+      readJsonFile(input, obj => {
+        if (!obj || obj.type !== "ebilling-full" || !obj.data) { alert("❌ یہ Full Backup فائل نہیں ہے۔"); return; }
+        const restored = migrate(obj.data);
+        if (!restored || !restored.devPinHash) { alert("❌ بیک اپ فائل خراب ہے۔"); return; }
+        if (masterData && !confirm("⚠️ موجودہ تمام ڈیٹا بیک اپ سے بدل جائے گا۔ جاری رکھیں؟")) return;
+        masterData = restored;
+        saveMasterData();
+        document.getElementById("setupScreen").style.display = "none";
+        document.getElementById("devPanelModal").style.display = "none";
+        document.getElementById("lockScreen").style.display = "flex";
+        alert("✅ بیک اپ کامیابی سے واپس آ گیا! اب PIN سے لاگ ان کریں۔");
+      });
+    }
+
+    function restoreShopBackup(input) {
+      readJsonFile(input, obj => {
+        if (!obj || obj.type !== "ebilling-shop" || !obj.shop) { alert("❌ یہ Shop Backup فائل نہیں ہے۔"); return; }
+        const shop = getActiveShop();
+        const b = obj.shop;
+        if (!confirm(`⚠️ "${shop.shopName}" کا موجودہ ڈیٹا (${b.shopName || "backup"}) کی فائل سے بدل جائے گا۔ جاری رکھیں؟`)) return;
+        shop.sales = Array.isArray(b.sales) ? b.sales : [];
+        shop.expenses = Array.isArray(b.expenses) ? b.expenses : [];
+        shop.udhaarList = Array.isArray(b.udhaarList) ? b.udhaarList : [];
+        shop.invoiceCounter = Math.max(shop.invoiceCounter || 1001, b.invoiceCounter || 1001);
+        saveMasterData();
+        alert("✅ دکان کا ڈیٹا واپس آ گیا!");
+      });
+    }
+
+    // ---------- POS BILLING & CART ----------
+    let currentCart = [];
+    let lastReceipt = null;
+    document.getElementById("liveDate").innerText = new Date().toLocaleDateString();
+
+    function setAnonymousCustomer() {
+      document.getElementById("custName").value = "Walk-in Customer";
+      document.getElementById("custPhone").value = "";
+      alert("✅ کیش پرچی منتخب ہو گئی ہے۔ نام یا فون پوچھنے کی ضرورت نہیں!");
+    }
+
+    function addItemToCart() {
+      const name = document.getElementById("itemName").value.trim() || "General Item";
+      const qty = parseFloat(normalizeDigits(document.getElementById("itemQty").value)) || 1;
+      const price = parseFloat(normalizeDigits(document.getElementById("itemPrice").value));
+
+      if (!price || price <= 0 || qty <= 0) {
+        alert("مہربانی کر کے درست ریٹ اور تعداد درج کریں!");
+        return false;
+      }
+
+      currentCart.push({ name, qty, price, total: Math.round(qty * price * 100) / 100 });
+      document.getElementById("itemName").value = "";
+      document.getElementById("itemQty").value = "1";
+      document.getElementById("itemPrice").value = "";
+      renderCart();
+      return true;
+    }
+
+    function removeCartItem(idx) {
+      currentCart.splice(idx, 1);
+      renderCart();
+    }
+
+    function renderCart() {
+      const box = document.getElementById("cartBox");
+      if (currentCart.length === 0) { box.style.display = "none"; return; }
+      box.style.display = "block";
+
+      document.getElementById("cartItemsList").innerHTML = currentCart.map((c, idx) => `
+        <div class="cart-item">
+          <span><strong>${esc(c.name)}</strong> (${esc(c.qty)} x ${esc(cur(c.price))})</span>
+          <span>${esc(cur(c.total))} <b onclick="removeCartItem(${idx})" style="color:red; cursor:pointer;">✖</b></span>
+        </div>
+      `).join("");
+
+      const sub = currentCart.reduce((s, i) => s + i.total, 0);
+      const disc = Math.max(0, parseFloat(document.getElementById("discountInput").value) || 0);
+      document.getElementById("cartGrandTotal").innerText = cur(Math.max(0, sub - disc));
+    }
+
+    function generateBill(isUdhaar) {
+      const directPrice = parseFloat(normalizeDigits(document.getElementById("itemPrice").value));
+      if (directPrice > 0 && !addItemToCart()) return;
+
+      if (currentCart.length === 0) {
+        alert("پرچی میں کم از کم ایک آئٹم شامل کریں!");
+        return;
+      }
+
+      let custName = document.getElementById("custName").value.trim();
+      if (!custName) custName = "Walk-in Customer";
+
+      // Check udhaar name BEFORE using up an invoice number
+      if (isUdhaar && custName === "Walk-in Customer") {
+        alert("ادھار کے لیے گاہک کا نام لکھنا لازمی ہے!");
+        return;
+      }
+
+      const custPhone = document.getElementById("custPhone").value.trim();
+      const subTotal = currentCart.reduce((s, i) => s + i.total, 0);
+      const discount = Math.min(subTotal, Math.max(0, parseFloat(document.getElementById("discountInput").value) || 0));
+      const grandTotal = Math.max(0, subTotal - discount);
+      const shop = getActiveShop();
+      const invNo = "INV-" + (++shop.invoiceCounter);
+      const when = nowStr();
+
+      if (isUdhaar) {
+        shop.udhaarList.unshift({
+          invNo, name: custName, phone: custPhone,
+          items: currentCart.map(i => `${i.name} (x${i.qty})`).join(", "),
+          amount: grandTotal, date: when
+        });
+      } else {
+        shop.sales.push({ type: "sale", invNo, name: custName, amount: grandTotal, day: dayKey(), time: when });
+      }
+
+      lastReceipt = {
+        shopName: shop.shopName, shopPhone: shop.shopPhone, footerCredit: shop.footerCredit,
+        currencySymbol: shop.currencySymbol, themeColor: shop.themeColor,
+        invNo, date: when, custName, custPhone,
+        items: [...currentCart], subTotal, discount, grandTotal, isUdhaar
+      };
+
+      currentCart = [];
+      document.getElementById("custName").value = "";
+      document.getElementById("custPhone").value = "";
+      document.getElementById("discountInput").value = "0";
+      renderCart();
+      saveMasterData();
+      showReceiptModal(lastReceipt);
+    }
+
+    function showReceiptModal(r) {
+      document.getElementById("rShopName").innerText = r.shopName;
+      document.getElementById("rShopPhone").innerText = r.shopPhone;
+      document.getElementById("rInvoiceNo").innerText = r.invNo;
+      document.getElementById("rDate").innerText = r.date;
+      document.getElementById("rCustName").innerText = r.custName;
+      document.getElementById("rCustPhone").innerText = r.custPhone || "N/A (Counter Sale)";
+      document.getElementById("rFooterCredit").innerText = r.footerCredit || "Software by Faisal AI Studio";
+
+      document.getElementById("rItemsBody").innerHTML = r.items.map(i => `
+        <tr>
+          <td>${esc(i.name)}</td>
+          <td>${esc(i.qty)}</td>
+          <td>${esc(r.currencySymbol + i.price)}</td>
+          <td style="text-align:right;">${esc(r.currencySymbol + i.total)}</td>
+        </tr>
+      `).join("");
+
+      document.getElementById("rSubTotal").innerText = `${r.currencySymbol}${r.subTotal}`;
+      document.getElementById("rDiscount").innerText = `- ${r.currencySymbol}${r.discount}`;
+      document.getElementById("rGrandTotal").innerText = `${r.currencySymbol}${r.grandTotal}`;
+
+      const stamp = document.getElementById("rStamp");
+      stamp.innerText = r.isUdhaar ? "UDHAAR / UNPAID" : "PAID IN FULL ✓";
+      stamp.className = r.isUdhaar ? "stamp stamp-udhaar" : "stamp stamp-paid";
+
+      document.getElementById("btnShareWa").style.display = r.custPhone ? "flex" : "none";
+      document.getElementById("receiptModal").style.display = "flex";
+    }
+
+    function closeReceiptModal() {
+      document.getElementById("receiptModal").style.display = "none";
+    }
+
+    // ---------- WHATSAPP ----------
+    function formatPakPhone(rawPhone) {
+      if (!rawPhone) return "";
+      let clean = normalizeDigits(rawPhone).replace(/[^0-9]/g, "");
+      if (clean.startsWith("00")) clean = clean.substring(2);
+      if (clean.startsWith("03")) clean = "92" + clean.substring(1);
+      else if (clean.startsWith("3") && clean.length === 10) clean = "92" + clean;
+      return clean;
+    }
+
+    function openCustomerWhatsAppChat(rawPhone, billMsg) {
+      const phone = formatPakPhone(rawPhone);
+      if (!phone || phone.length < 10) {
+        alert("کسٹمر کا موبائل نمبر درست درج نہیں کیا گیا!");
+        return;
+      }
+      const waUrl = `https://wa.me/${phone}?text=${encodeURIComponent(billMsg)}`;
+      const a = document.createElement("a");
+      a.href = waUrl;
+      a.target = "_blank";
+      a.rel = "noopener";
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+    }
+
+    function buildReceiptTextMessage(r) {
+      const itemLines = r.items.map((i, idx) => `▫️ ${idx + 1}. *${i.name}* (${i.qty} x ${r.currencySymbol}${i.price}) = *${r.currencySymbol}${i.total}*`).join("\n");
+      const statusBadge = r.isUdhaar ? "🔴 *UDHAAR (BAQAYA)*" : "🟢 *CASH PAID (SHUKRIYA)*";
+      return `🧾 *${r.shopName.toUpperCase()}*
+📍 _${r.shopPhone}_
+━━━━━━━━━━━━━━━━━━━━
+🆔 *Bill No:* ${r.invNo}
+📅 *Tarikh:* ${r.date}
+👤 *Customer:* ${r.custName}
+━━━━━━━━━━━━━━━━━━━━
+📦 *ITEMS DETAIL:*
+${itemLines}
+━━━━━━━━━━━━━━━━━━━━
+💵 Sub-Total: ${r.currencySymbol}${r.subTotal}
+🏷️ Discount: ${r.currencySymbol}${r.discount}
+💰 *GRAND TOTAL: ${r.currencySymbol}${r.grandTotal}*
+📌 Status: ${statusBadge}
+━━━━━━━━━━━━━━━━━━━━
+_${r.footerCredit}_`;
+    }
+
+    function shareReceiptWhatsApp() {
+      if (!lastReceipt || !lastReceipt.custPhone) {
+        alert("اس بل میں کسٹمر کا موبائل نمبر موجود نہیں ہے!");
+        return;
+      }
+      openCustomerWhatsAppChat(lastReceipt.custPhone, buildReceiptTextMessage(lastReceipt));
+    }
+
+    // ---------- SMS RECEIPT (for customers without WhatsApp) ----------
+    function buildReceiptSMS(r) {
+      const c = r.currencySymbol || "Rs. ";
+      const money = v => c + Number(v || 0).toLocaleString();
+      let t = r.shopName + "\nBill: " + r.invNo + " | " + r.date + "\n";
+      r.items.forEach(i => { t += i.name + " x" + i.qty + " = " + money(i.total) + "\n"; });
+      if (r.discount > 0) t += "Discount: -" + money(r.discount) + "\n";
+      t += "TOTAL: " + money(r.grandTotal) + (r.isUdhaar ? " (UDHAAR)" : " (PAID)") + "\nShukriya!";
+      return t;
+    }
+
+    function shareReceiptSMS() {
+      if (!lastReceipt || !lastReceipt.custPhone) {
+        alert("اس بل میں کسٹمر کا موبائل نمبر موجود نہیں ہے!");
+        return;
+      }
+      let phone = normalizeDigits(lastReceipt.custPhone).replace(/[^0-9+]/g, "");
+      if (phone.startsWith("92")) phone = "+" + phone;
+      const sep = /iPhone|iPad|iPod/i.test(navigator.userAgent) ? "&" : "?";
+      window.location.href = "sms:" + phone + sep + "body=" + encodeURIComponent(buildReceiptSMS(lastReceipt));
+    }
+
+    // ---------- OFFLINE CANVAS & PDF ----------
+    function drawReceiptToCanvas(r) {
+      const canvas = document.getElementById("receiptCanvas");
+      const width = 560;
+      const height = 480 + (r.items.length * 38);
+      canvas.width = width;
+      canvas.height = height;
+      const ctx = canvas.getContext("2d");
+      const theme = r.themeColor || "#065f46";
+
+      ctx.fillStyle = "#ffffff";
+      ctx.fillRect(0, 0, width, height);
+      ctx.fillStyle = theme;
+      ctx.fillRect(0, 0, width, 14);
+
+      ctx.fillStyle = "#0f172a";
+      ctx.font = "bold 26px sans-serif";
+      ctx.textAlign = "center";
+      ctx.fillText(r.shopName.toUpperCase(), width / 2, 52);
+
+      ctx.fillStyle = "#64748b";
+      ctx.font = "14.5px sans-serif";
+      ctx.fillText(r.shopPhone, width / 2, 78);
+
+      function drawDash(y) {
+        ctx.strokeStyle = "#cbd5e1";
+        ctx.lineWidth = 2;
+        ctx.setLineDash([6, 4]);
+        ctx.beginPath();
+        ctx.moveTo(30, y);
+        ctx.lineTo(width - 30, y);
+        ctx.stroke();
+        ctx.setLineDash([]);
+      }
+
+      drawDash(98);
+
+      ctx.fillStyle = "#334155";
+      ctx.font = "bold 15px sans-serif";
+      ctx.textAlign = "left";
+      ctx.fillText("Bill No: " + r.invNo, 30, 126);
+      ctx.fillText("Customer: " + r.custName, 30, 150);
+      ctx.textAlign = "right";
+      ctx.fillText("Date: " + r.date, width - 30, 126);
+      ctx.fillText("Phone: " + (r.custPhone || "Counter Sale"), width - 30, 150);
+
+      drawDash(168);
+
+      ctx.fillStyle = "#0f172a";
+      ctx.font = "bold 15px sans-serif";
+      ctx.textAlign = "left";
+      ctx.fillText("ITEM DESCRIPTION", 30, 195);
+      ctx.textAlign = "center";
+      ctx.fillText("QTY", 320, 195);
+      ctx.fillText("RATE", 405, 195);
+      ctx.textAlign = "right";
+      ctx.fillText("TOTAL", width - 30, 195);
+
+      ctx.strokeStyle = "#94a3b8";
+      ctx.beginPath();
+      ctx.moveTo(30, 206);
+      ctx.lineTo(width - 30, 206);
+      ctx.stroke();
+
+      let y = 234;
+      ctx.font = "15px sans-serif";
+      ctx.fillStyle = "#1e293b";
+      r.items.forEach(item => {
+        ctx.textAlign = "left";
+        ctx.fillText(String(item.name).substring(0, 24), 30, y);
+        ctx.textAlign = "center";
+        ctx.fillText(String(item.qty), 320, y);
+        ctx.fillText(String(item.price), 405, y);
+        ctx.textAlign = "right";
+        ctx.font = "bold 15px sans-serif";
+        ctx.fillText(r.currencySymbol + item.total, width - 30, y);
+        ctx.font = "15px sans-serif";
+        y += 36;
+      });
+
+      drawDash(y);
+      y += 28;
+
+      ctx.textAlign = "left";
+      ctx.fillStyle = "#475569";
+      ctx.fillText("Sub-Total:", 30, y);
+      ctx.textAlign = "right";
+      ctx.fillText(r.currencySymbol + r.subTotal, width - 30, y);
+
+      y += 26;
+      ctx.textAlign = "left";
+      ctx.fillText("Special Discount:", 30, y);
+      ctx.textAlign = "right";
+      ctx.fillText("- " + r.currencySymbol + r.discount, width - 30, y);
+
+      y += 34;
+      ctx.fillStyle = theme;
+      ctx.font = "bold 22px sans-serif";
+      ctx.textAlign = "left";
+      ctx.fillText("GRAND TOTAL:", 30, y);
+      ctx.textAlign = "right";
+      ctx.fillText(r.currencySymbol + r.grandTotal, width - 30, y);
+
+      y += 45;
+      ctx.textAlign = "center";
+      ctx.font = "bold 16px sans-serif";
+      ctx.fillStyle = r.isUdhaar ? "#dc2626" : "#059669";
+      ctx.fillText(r.isUdhaar ? "[ UDHAAR / UNPAID ]" : "[ PAID IN FULL - SHUKRIYA ]", width / 2, y);
+
+      y += 38;
+      ctx.fillStyle = "#334155";
+      ctx.font = "bold 16px monospace";
+      ctx.fillText("||| |||| || ||||| ||| |||| |||||", width / 2, y);
+
+      y += 24;
+      ctx.fillStyle = "#94a3b8";
+      ctx.font = "12px sans-serif";
+      ctx.fillText(r.footerCredit || "Software by Faisal AI Studio", width / 2, y);
+
+      return canvas;
+    }
+
+    function canvasToPDFBlob(canvas) {
+      const jpegDataUrl = canvas.toDataURL("image/jpeg", 0.92);
+      const rawJpeg = atob(jpegDataUrl.split(",")[1]);
+      const imgLen = rawJpeg.length;
+      const w = canvas.width;
+      const h = canvas.height;
+
+      const contentStream = `q\n${w} 0 0 ${h} 0 0 cm\n/Im0 Do\nQ\n`;
+      const parts = [];
+      const offsets = [];
+      let currentLen = 0;
+
+      function pushStr(str) { parts.push(str); currentLen += str.length; }
+      function startObj(id) { offsets[id] = currentLen; pushStr(`${id} 0 obj\n`); }
+
+      pushStr("%PDF-1.4\n");
+      startObj(1); pushStr("<< /Type /Catalog /Pages 2 0 R >>\nendobj\n");
+      startObj(2); pushStr("<< /Type /Pages /Kids [3 0 R] /Count 1 >>\nendobj\n");
+      startObj(3); pushStr(`<< /Type /Page /Parent 2 0 R /Resources << /XObject << /Im0 4 0 R >> >> /MediaBox [0 0 ${w} ${h}] /Contents 5 0 R >>\nendobj\n`);
+      startObj(4);
+      pushStr(`<< /Type /XObject /Subtype /Image /Width ${w} /Height ${h} /ColorSpace /DeviceRGB /BitsPerComponent 8 /Filter /DCTDecode /Length ${imgLen} >>\nstream\n`);
+      pushStr(rawJpeg);
+      pushStr("\nendstream\nendobj\n");
+      startObj(5); pushStr(`<< /Length ${contentStream.length} >>\nstream\n${contentStream}endstream\nendobj\n`);
+
+      const xrefOffset = currentLen;
+      pushStr("xref\n0 6\n0000000000 65535 f \n");
+      for (let i = 1; i <= 5; i++) pushStr(String(offsets[i]).padStart(10, "0") + " 00000 n \n");
+      pushStr(`trailer\n<< /Size 6 /Root 1 0 R >>\nstartxref\n${xrefOffset}\n%%EOF`);
+
+      const fullStr = parts.join("");
+      const bytes = new Uint8Array(fullStr.length);
+      for (let i = 0; i < fullStr.length; i++) bytes[i] = fullStr.charCodeAt(i) & 0xff;
+      return new Blob([bytes], { type: "application/pdf" });
+    }
+
+    function triggerBlobDownload(blob, fileName) {
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement("a");
+      a.href = url;
+      a.download = fileName;
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+      setTimeout(() => URL.revokeObjectURL(url), 5000);
+    }
+
+    function safeFilePart(s) { return String(s || "Customer").replace(/[^\w\u0600-\u06FF-]+/g, "_"); }
+
+    function saveAndSharePDF() {
+      if (!lastReceipt) return;
+      const canvas = drawReceiptToCanvas(lastReceipt);
+      const pdfBlob = canvasToPDFBlob(canvas);
+      const fileName = `${lastReceipt.invNo}_${safeFilePart(lastReceipt.custName)}.pdf`;
+      triggerBlobDownload(pdfBlob, fileName);
+
+      if (lastReceipt.custPhone) {
+        const shortMsg = `السلام علیکم ${lastReceipt.custName} صاحب!\nآپ کا ڈیجیٹل بل (${lastReceipt.invNo}) تیار ہے۔\nکل رقم: ${lastReceipt.currencySymbol}${lastReceipt.grandTotal}\n(پی ڈی ایف رسید آپ کو بھیجی جا رہی ہے)`;
+        setTimeout(() => openCustomerWhatsAppChat(lastReceipt.custPhone, shortMsg), 600);
+      } else {
+        alert(`✅ PDF رسید (${fileName}) ڈاؤنلوڈ ہو گئی ہے!`);
+      }
+    }
+
+    function saveAndShareImage() {
+      if (!lastReceipt) return;
+      const canvas = drawReceiptToCanvas(lastReceipt);
+      const fileName = `${lastReceipt.invNo}_${safeFilePart(lastReceipt.custName)}_Parchi.png`;
+      canvas.toBlob((blob) => {
+        triggerBlobDownload(blob, fileName);
+        if (lastReceipt.custPhone) {
+          const shortMsg = `السلام علیکم ${lastReceipt.custName} صاحب!\nآپ کا بل (${lastReceipt.invNo}) - کل رقم: ${lastReceipt.currencySymbol}${lastReceipt.grandTotal}`;
+          setTimeout(() => openCustomerWhatsAppChat(lastReceipt.custPhone, shortMsg), 600);
+        } else {
+          alert(`✅ HD Image رسید (${fileName}) ڈاؤنلوڈ ہو گئی ہے!`);
+        }
+      }, "image/png");
+    }
+
+    // ---------- THERMAL PRINTING (no more double print) ----------
+    function printThermalRawBT() {
+      if (!lastReceipt) return;
+      const r = lastReceipt;
+      let slip = `${r.shopName}\n${r.shopPhone}\n`;
+      slip += `--------------------------------\n`;
+      slip += `Bill: ${r.invNo}   Date: ${r.date}\n`;
+      slip += `Customer: ${r.custName}\n`;
+      slip += `--------------------------------\n`;
+      r.items.forEach(i => { slip += `${i.name} x${i.qty}   ${r.currencySymbol}${i.total}\n`; });
+      slip += `--------------------------------\n`;
+      if (r.discount > 0) slip += `Discount: -${r.currencySymbol}${r.discount}\n`;
+      slip += `TOTAL: ${r.currencySymbol}${r.grandTotal}\n`;
+      slip += `Status: ${r.isUdhaar ? "UDHAAR" : "PAID"}\n\n`;
+      slip += `Thank You!\n\n\n`;
+      window.location.href = `rawbt:base64,${btoa(unescape(encodeURIComponent(slip)))}`;
+    }
+
+    function printTestSlip() {
+      const shop = getActiveShop();
+      lastReceipt = {
+        shopName: shop.shopName, shopPhone: shop.shopPhone, footerCredit: shop.footerCredit,
+        currencySymbol: shop.currencySymbol, themeColor: shop.themeColor,
+        invNo: "TEST-01", date: new Date().toLocaleTimeString(),
+        custName: "Counter Test", custPhone: "",
+        items: [{ name: "Test Slip", qty: 1, price: 10, total: 10 }],
+        subTotal: 10, discount: 0, grandTotal: 10, isUdhaar: false
+      };
+      printThermalRawBT();
+    }
+
+    // ---------- VOICE ASSISTANT (Urdu digits + Urdu names now work) ----------
+    let autoVoiceTimer = null;
+    const FILLER_WORDS = ["روپے", "روپیہ", "روپئے", "روپ", "rs", "rs.", "rupay", "rupees", "rupee", "rupaye",
+      "کا", "کی", "کے", "کو", "سے", "ka", "ki", "ke", "ko", "se",
+      "بیچا", "بیچی", "بیچے", "becha", "bechi", "beche", "sold", "ek", "ایک"];
+
+    function startVoiceAction() {
+      document.getElementById("smartVoiceInput").focus();
+      document.getElementById("voiceStatus").innerText = "🟢 کی بورڈ کا مائیک دبائیں اور بولیں، سسٹم خود سمجھے گا!";
+    }
+
+    function autoVoiceTrigger() {
+      clearTimeout(autoVoiceTimer);
+      const val = normalizeDigits(document.getElementById("smartVoiceInput").value.trim());
+      // Auto-run only when there is an amount AND at least one word, after a 1.5 second pause
+      if (!val || !/\d/.test(val) || !/[^\d\s.,]/.test(val)) return;
+      autoVoiceTimer = setTimeout(runVoiceCommand, 1500);
+    }
+
+    function parseVoice(raw) {
+      const val = normalizeDigits(raw).trim();
+      const numMatch = val.match(/\d+(?:\.\d+)?/);
+      const amount = numMatch ? parseFloat(numMatch[0]) : 0;
+
+      let name = "Walk-in Customer";
+      let tokens = val.split(/\s+/);
+      // (?=\s|$) instead of \b, because \b does not work with Urdu letters
+      const m = val.match(/^(.+?)\s+(?:کو|کا|سے|ko|ka|se)(?=\s|$)/i);
+      if (m && m[1] && !/\d/.test(m[1])) {
+        name = m[1].trim();
+        tokens = tokens.slice(name.split(/\s+/).length + 1);
+      }
+      const itemName = tokens
+        .filter(t => !/^\d+(?:\.\d+)?$/.test(t))
+        .filter(t => FILLER_WORDS.indexOf(t.toLowerCase()) === -1)
+        .join(" ").trim() || "Voice Entry Item";
+      return { amount, name, itemName };
+    }
+
+    function runVoiceCommand() {
+      clearTimeout(autoVoiceTimer);
+      const input = document.getElementById("smartVoiceInput");
+      const val = input.value.trim();
+      if (!val) return;
+
+      const p = parseVoice(val);
+      if (!(p.amount > 0)) {
+        alert("مہربانی کر کے بولتے وقت رقم ضرور بولیں!");
+        return;
+      }
+
+      input.value = "";
+      if (currentCart.length > 0) {
+        // Don't wipe the items already in the parchi: add to it instead
+        currentCart.push({ name: p.itemName, qty: 1, price: p.amount, total: p.amount });
+        if (p.name !== "Walk-in Customer") document.getElementById("custName").value = p.name;
+        renderCart();
+        document.getElementById("voiceStatus").innerText = `✅ ${p.itemName} (${cur(p.amount)}) پرچی میں شامل ہو گیا۔ بل کے لیے Cash Bill دبائیں۔`;
+        return;
+      }
+
+      currentCart = [{ name: p.itemName, qty: 1, price: p.amount, total: p.amount }];
+      document.getElementById("custName").value = p.name;
+      generateBill(false);
+      document.getElementById("voiceStatus").innerText = `✅ آواز سے ${cur(p.amount)} کا بل بن گیا!`;
+    }
+
+    function changeCurrency() {
+      const shop = getActiveShop();
+      shop.currencySymbol = document.getElementById("currencySelector").value;
+      saveMasterData();
+      renderCart();
+    }
+
+    function switchTab(tab, btn) {
+      ["pos", "udhaar", "expense", "printer", "settings"].forEach(t => {
+        document.getElementById("tab-" + t).style.display = (t === tab) ? "block" : "none";
+      });
+      document.querySelectorAll(".tab-btn").forEach(b => b.classList.remove("active"));
+      if (btn) btn.classList.add("active");
+    }
+
+    function addExpense() {
+      const shop = getActiveShop();
+      const title = document.getElementById("expTitle").value.trim();
+      const amount = parseFloat(normalizeDigits(document.getElementById("expAmount").value));
+      if (!title || !(amount > 0)) { alert("خرچے کا نام اور رقم لکھیں۔"); return; }
+      shop.expenses.unshift({ title, amount, day: dayKey(), time: nowStr() });
+      document.getElementById("expTitle").value = "";
+      document.getElementById("expAmount").value = "";
+      saveMasterData();
+    }
+
+    function recoverUdhaar(i) {
+      const shop = getActiveShop();
+      const u = shop.udhaarList[i];
+      if (!u) return;
+      if (!confirm(`${u.name} سے ${cur(u.amount)} وصول ہو گئے؟`)) return;
+      shop.sales.push({ type: "recovery", invNo: u.invNo, name: u.name, amount: u.amount, day: dayKey(), time: nowStr() });
+      shop.udhaarList.splice(i, 1);
+      saveMasterData();
+    }
+
+    function renderDailyReport(shop) {
+      let rows = "";
+      for (let n = 0; n < 7; n++) {
+        const d = new Date();
+        d.setDate(d.getDate() - n);
+        const k = dayKey(d);
+        const sales = shop.sales.filter(s => s.day === k).reduce((a, s) => a + s.amount, 0);
+        const exp = shop.expenses.filter(e => e.day === k).reduce((a, e) => a + e.amount, 0);
+        rows += `<tr><td>${n === 0 ? "Today" : esc(k)}</td><td>${esc(cur(sales))}</td><td>${esc(cur(exp))}</td><td><strong>${esc(cur(sales - exp))}</strong></td></tr>`;
+      }
+      document.getElementById("dailyReport").innerHTML =
+        `<table class="report-table"><thead><tr><th>Date</th><th>Cash In</th><th>Expense</th><th>Net</th></tr></thead><tbody>${rows}</tbody></table>`;
+    }
+
+    function renderUI() {
+      const shop = getActiveShop();
+      document.getElementById("shopTitle").innerText = shop.shopName;
+      document.getElementById("lockShopTitle").innerText = shop.shopName;
+      document.getElementById("shopSub").innerText = shop.shopPhone;
+      document.getElementById("brandSignature").innerText = shop.footerCredit || "Software by Faisal AI Studio";
+
+      const logoBox = document.getElementById("headerLogoBox");
+      logoBox.innerHTML = "";
+      if (shop.shopLogo && /^https?:\/\//i.test(shop.shopLogo)) {
+        const img = document.createElement("img");
+        img.alt = "logo";
+        img.src = shop.shopLogo;
+        img.onerror = () => { logoBox.textContent = "🛒"; };
+        logoBox.appendChild(img);
+      } else {
+        logoBox.textContent = shop.shopLogo || "🛒";
+      }
+
+      const today = dayKey();
+      const todaySales = shop.sales.filter(s => s.day === today).reduce((a, s) => a + s.amount, 0);
+      const todayExpenses = shop.expenses.filter(e => e.day === today);
+      const totalExp = todayExpenses.reduce((a, e) => a + e.amount, 0);
+      const totalU = shop.udhaarList.reduce((a, u) => a + u.amount, 0);
+      document.getElementById("netCash").innerText = cur(todaySales - totalExp);
+      document.getElementById("todayExp").innerText = cur(totalExp);
+      document.getElementById("totalUdhaar").innerText = cur(totalU);
+      document.getElementById("uCount").innerText = shop.udhaarList.length;
+      document.getElementById("currencySelector").value = shop.currencySymbol;
+
+      if (shop.allowClientBranding) {
+        document.getElementById("clientEditName").value = shop.shopName;
+        document.getElementById("clientEditPhone").value = shop.shopPhone;
+      }
+
+      document.getElementById("udhaarList").innerHTML = shop.udhaarList.length ? shop.udhaarList.map((u, i) => `
+        <div style="background:#f8fafc; padding:10px; border-radius:8px; margin-bottom:6px; border:1px solid #cbd5e1; display:flex; justify-content:space-between; align-items:center; gap:8px;">
+          <div><strong>${esc(u.name)}</strong> <small style="color:#64748b;">${esc(u.invNo)} • ${esc(u.date)}</small><br>
+            <small style="color:#475569;">${esc(u.items)}</small><br>
+            <small style="color:red; font-weight:bold;">${esc(cur(u.amount))}</small></div>
+          <button onclick="recoverUdhaar(${i})" style="background:#059669; color:white; border:none; padding:6px 10px; border-radius:6px; font-weight:bold; flex-shrink:0;">وصول</button>
+        </div>
+      `).join("") : `<p style="font-size:13px; color:#64748b;">کوئی ادھار باقی نہیں ✅</p>`;
+
+      document.getElementById("expList").innerHTML = todayExpenses.length ? todayExpenses.map(e => `
+        <div style="display:flex; justify-content:space-between; padding:5px 0; border-bottom:1px dotted #ccc;">
+          <span>${esc(e.title)}</span><strong>- ${esc(cur(e.amount))}</strong>
+        </div>
+      `).join("") : `<p style="color:#64748b;">آج کوئی خرچہ درج نہیں ہوا۔</p>`;
+
+      renderDailyReport(shop);
+    }
+
+    // Refresh the daily totals automatically when the date changes (shop open past midnight)
+    let lastRenderedDay = dayKey();
+    setInterval(() => {
+      if (masterData && dayKey() !== lastRenderedDay) {
+        lastRenderedDay = dayKey();
+        document.getElementById("liveDate").innerText = new Date().toLocaleDateString();
+        renderUI();
+      }
+    }, 60000);
+
+    // ---------- FIREBASE CLOUD CONFIGURATION ----------
+    const firebaseConfig = {
+      apiKey: "AIzaSyBDwjNeQFKJMV2IC2tYo-flNDqsB2X5p10",
+      authDomain: "e---billing-system-7c1d5.firebaseapp.com",
+      projectId: "e---billing-system-7c1d5",
+      storageBucket: "e---billing-system-7c1d5.firebasestorage.app",
+      messagingSenderId: "312535551485",
+      appId: "1:312535551485:web:4d35185bef69b9ac96dd94"
+    };
+
+    let cloudDb = null;
+    let cloudDocRef = null;
+    let isApplyingCloudUpdate = false;
+    let cloudSyncTimer = null;
+
+    function updateSyncStatus(text, color) {
+      const loginEl = document.getElementById("cloudLoginStatus");
+      const headerEl = document.getElementById("headerSyncBadge");
+      if (loginEl) { loginEl.textContent = text; loginEl.style.color = color || "#38bdf8"; }
+      if (headerEl) { headerEl.textContent = text; }
+    }
+
+    try {
+      if (window.firebase) {
+        if (!firebase.apps.length) firebase.initializeApp(firebaseConfig);
+        cloudDb = firebase.firestore();
+        cloudDb.enablePersistence({ synchronizeTabs: true }).catch(() => {});
+        cloudDocRef = cloudDb.collection("ebilling_saas").doc("master_v6");
+      } else {
+        updateSyncStatus("🟠 Offline Mode", "#f59e0b");
+      }
+    } catch (err) {
+      console.warn("Firebase init skipped (offline mode):", err);
+      updateSyncStatus("🟠 Offline Mode", "#f59e0b");
+    }
+
+    // ---------- CLOUD REAL-TIME SYNC ENGINE ----------
+    function pushToCloud(immediate) {
+      if (!cloudDocRef || !masterData || isApplyingCloudUpdate) return;
+      clearTimeout(cloudSyncTimer);
+      const executePush = () => {
+        updateSyncStatus("🔄 Syncing...", "#38bdf8");
+        const payload = JSON.parse(JSON.stringify(masterData));
+        payload.updatedAt = Date.now();
+        cloudDocRef.set(payload, { merge: true })
+          .then(() => updateSyncStatus("🟢 Cloud Live", "#10b981"))
+          .catch(() => updateSyncStatus("🟠 Offline (Saved Local)", "#f59e0b"));
+      };
+      if (immediate) executePush();
+      else cloudSyncTimer = setTimeout(executePush, 400);
+    }
+
+    function applyCloudSnapshot(remoteRaw) {
+      const migrated = migrate(remoteRaw);
+      if (!migrated) return;
+
+      isApplyingCloudUpdate = true;
+      const currentActiveId = masterData ? masterData.activeShopId : migrated.activeShopId;
+      if (migrated.shops.some(s => s.id === currentActiveId)) {
+        migrated.activeShopId = currentActiveId;
+      }
+      masterData = migrated;
+      localStorage.setItem(MASTER_KEY, JSON.stringify(masterData));
+
+      // Switch from setup screen to login screen automatically if cloud already has shops
+      if (document.getElementById("setupScreen").style.display !== "none") {
+        document.getElementById("setupScreen").style.display = "none";
+        document.getElementById("lockScreen").style.display = "flex";
+      }
+
+      // Remote Kill-Switch: If currently logged-in shop is suspended by Developer, lock immediately
+      const activeShop = getActiveShop();
+      const isUnlocked = document.getElementById("lockScreen").style.display === "none";
+      const isDevOpen = document.getElementById("devPanelModal").style.display !== "none";
+      if (isUnlocked && !isDevOpen && activeShop && !activeShop.isActive) {
+        closeReceiptModal();
+        document.getElementById("lockScreen").style.display = "flex";
+        alert(`⛔ LICENSE SUSPENDED: (${activeShop.shopName}) کا سافٹ ویئر ڈویلپر کی جانب سے معطل کر دیا گیا ہے۔`);
+      }
+
+      if (isDevOpen) populateDevShopDropdown();
+      applyPermissions();
+      renderUI();
+      isApplyingCloudUpdate = false;
+    }
+
+    function startCloudListener() {
+      if (!cloudDocRef) return;
+      cloudDocRef.onSnapshot((doc) => {
+        if (doc.exists) {
+          updateSyncStatus("🟢 Cloud Live", "#10b981");
+          if (!doc.metadata.hasPendingWrites) {
+            applyCloudSnapshot(doc.data());
+          }
+        } else if (masterData) {
+          // First time connecting with existing local data: upload to cloud
+          pushToCloud(true);
+        } else {
+          updateSyncStatus("🟡 Ready (No Cloud Shops Yet)", "#f59e0b");
+        }
+      }, () => {
+        updateSyncStatus("🟠 Offline Mode", "#f59e0b");
+      });
+    }
+
+    function syncFromCloudNow() {
+      if (!cloudDocRef) { alert("انٹرنیٹ یا کلاؤڈ کنکشن دستیاب نہیں ہے۔"); return; }
+      updateSyncStatus("🔄 Fetching...", "#38bdf8");
+      cloudDocRef.get().then((doc) => {
+        if (doc.exists) {
+          applyCloudSnapshot(doc.data());
+          updateSyncStatus("🟢 Cloud Live", "#10b981");
+          alert("✅ آن لائن کلاؤڈ سے تمام دکانوں کا تازہ ترین ڈیٹا ڈاؤن لوڈ ہو گیا ہے!");
+        } else {
+          alert("کلاؤڈ ڈیٹابیس ابھی خالی ہے۔ پہلے سیٹ اپ مکمل کریں۔");
+        }
+      }).catch(() => alert("❌ کلاؤڈ سے رابطہ نہیں ہو سکا۔ انٹرنیٹ چیک کریں۔"));
+    }
+
+    // ---------- START ----------
+    if (!masterData) {
+      document.getElementById("lockScreen").style.display = "none";
+      document.getElementById("setupScreen").style.display = "flex";
+    } else {
+      localStorage.setItem(MASTER_KEY, JSON.stringify(masterData)); // save upgraded data (removes plain-text dev PIN)
+      applyPermissions();
+      renderUI();
+    }
+    startCloudListener();
+  </script>
+</body>
+</html>
